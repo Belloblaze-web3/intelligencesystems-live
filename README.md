@@ -22,8 +22,14 @@ For real commerce, replace the demo enrolment path with a server-backed checkout
 
 The login, enrolments, progress, and certificate state are explicitly browser-local demo data. Connect a real authentication provider and server/database before collecting or relying on personal data. The UI copy marks this boundary so it is not confused with production account security.
 
+## Internship application API and storage
+
+The internship form posts to `POST /api/applications`. The Node server validates the role, name, email, optional phone and HTTPS profile URLs, and message on the server before accepting a submission. Accepted applications are stored as JSON records outside `public/`, by default in `data/applications.json`. Set `APPLICATIONS_FILE` to a path on a private, durable writable volume in production. The data directory is excluded from Git and records are written with restrictive file permissions. There is intentionally no public endpoint for reading stored applications; review them only through authorized server access and establish an appropriate retention/deletion policy before collecting real applicants' data.
+
+The saved application is followed by a `mailto:` draft so the applicant can notify the team by reviewing and sending the email. Saving it does not send an email. Apply rate limiting, monitoring, backups/access controls, and retention policy appropriate to the deployment before collecting real applicant data; the included demo endpoint does not provide administrator authentication, a CAPTCHA, or a production database.
+
 ## Deployment
 
-The managed deployment is configured as a static build from `public/` using the no-dependency `npm run build` validation command; `server.js` is used for local Preview and health checks. If deploying to a static host, publish the `public/` directory and configure unknown routes to fall back to `index.html` if hash navigation is later replaced with pathname routing. Keep `/manus-routes.json` available at the site root. Internship listings use listing-specific `mailto:` application URLs; replace them with real external application portals before launch if desired.
+The default `npm run build` validates static assets only. `server.js` provides local Preview, health checks, and the application API. A static-only host serving `public/` cannot persist internship applications; deploy the Node server (or implement an equivalent protected backend) and attach a durable private volume for `APPLICATIONS_FILE`. Keep `/manus-routes.json` available at the site root. If deploying to a static host, configure unknown routes to fall back to `index.html` if hash navigation is later replaced with pathname routing.
 
 The original attachment was incomplete and contained fake Supabase, Stripe, and Razorpay placeholders plus client-side auto-enrolment after opening payment. Those unsafe behaviors were removed.

@@ -147,8 +147,14 @@
 
   $('authButton').addEventListener('click', openAuth);
   $('authForm').addEventListener('submit', event => { event.preventDefault(); state.user = { name: $('authName').value.trim(), email: $('authEmail').value.trim() }; save(); updateAuthButton(); closeDialog('authDialog'); navigate('dashboard'); toast('Demo session started.'); });
-  $('applicationForm').addEventListener('submit', event => {
+  $('applicationForm').addEventListener('submit', async event => {
     event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const submitButton = form.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    const originalLabel = submitButton.innerHTML;
+    submitButton.textContent = 'Saving application…';
     const values = new FormData(event.currentTarget);
     const role = String(values.get('role') || 'Internship').trim();
     const body = [
@@ -157,13 +163,32 @@
       `Email: ${String(values.get('email') || '').trim()}`,
       `Phone: ${String(values.get('phone') || '').trim() || 'Not provided'}`,
       `Portfolio or resume: ${String(values.get('portfolio') || '').trim() || 'Not provided'}`,
+      `LinkedIn profile: ${String(values.get('linkedin') || '').trim() || 'Not provided'}`,
       '',
       'Message:',
       String(values.get('message') || '').trim()
     ].join('\n');
-    const subject = encodeURIComponent(`Internship application: ${role}`);
-    window.location.href = `mailto:internships@intelligencesystems.in?subject=${subject}&body=${encodeURIComponent(body)}`;
-    toast('If an email app is configured, a draft should open. Review and send it to submit your application.');
+    const application = Object.fromEntries(values.entries());
+    try {
+      const response = await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(application)
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        const fieldErrors = result.fields ? Object.entries(result.fields).map(([field, message]) => `${field}: ${message}`).join(' ') : result.error;
+        throw new Error(fieldErrors || 'The application could not be saved.');
+      }
+      const subject = encodeURIComponent(`Internship application: ${role}`);
+      window.location.href = `mailto:internships@intelligencesystems.in?subject=${subject}&body=${encodeURIComponent(body)}`;
+      toast('Application saved on this server. Review and send the email draft to notify the team.');
+    } catch (error) {
+      toast(error.message || 'Could not save your application. Please try again.');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.innerHTML = originalLabel;
+    }
   });
   document.querySelectorAll('[data-view]').forEach(link => link.addEventListener('click', event => { const view = link.dataset.view; if (view) { event.preventDefault(); navigate(view); } }));
   document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
