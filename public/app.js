@@ -13,6 +13,13 @@
     { id: 4, title: 'Digital Marketing', short: 'DM', description: 'SEO, paid acquisition and measurable growth loops.', accent: '#ffb86b', modules: ['SEO fundamentals', 'Social media systems', 'Google Ads', 'Email automation', 'Practical lab: live campaign', 'Capstone: brand growth'] },
     { id: 5, title: 'Generative AI', short: 'GEN', description: 'LLMs, prompting, retrieval and product deployment.', accent: '#ff83cf', modules: ['LLM foundations', 'Prompt engineering', 'LangChain & RAG', 'Image generation', 'Practical lab: AI assistant', 'Capstone: GenAI SaaS'] }
   ];
+  const courseIllustrations = {
+    1: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-1.webp', alt: 'A learning machine adapting to incoming data patterns' },
+    2: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-2.webp', alt: 'An AI robotic system automating connected tasks' },
+    3: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-3.webp', alt: 'Data structures revealing patterns and insights' },
+    4: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-4.webp', alt: 'A digital campaign reaching a connected audience' },
+    5: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-5.webp', alt: 'Generative AI transforming a network into a new creation' }
+  };
   const videoIds = ['7eh4d6sabA0', 'ukzFI9rgwfU', '7eh4d6sabA0', 'ukzFI9rgwfU', '7eh4d6sabA0', '7eh4d6sabA0'];
   const courses = courseSeeds.map(course => ({ ...course, modules: course.modules.map((title, index) => ({ title, description: ['Concepts, setup and your first working system.', 'Turn messy inputs into useful signals.', 'Build and evaluate a supervised solution.', 'Find structure without labels.', 'A focused, real-world implementation sprint.', 'Ship an end-to-end portfolio project.'][index], video: `https://www.youtube.com/embed/${videoIds[index]}?rel=0`, pdf: `/resources/module-guide.pdf#page=${index + 1}`, lab: `https://colab.research.google.com/?course=${encodeURIComponent(course.title)}&module=${index + 1}` })) }));
   const internships = [
@@ -31,6 +38,17 @@
   const isUnlocked = (id, index) => index === 0 || completed(id).includes(index - 1);
   const openDialog = id => $(id).showModal();
   const closeDialog = id => $(id).close();
+  function createCourseIllustration(course) {
+    const visual = document.createElement('div');
+    visual.className = 'course-visual';
+    const image = document.createElement('img');
+    image.src = courseIllustrations[course.id].src;
+    image.alt = courseIllustrations[course.id].alt;
+    image.loading = 'lazy';
+    image.decoding = 'async';
+    visual.append(image);
+    return visual;
+  }
 
   function navigate(view) {
     const valid = ['home', 'courses', 'dashboard', 'internships'];
@@ -49,6 +67,7 @@
       <div class="course-top"><span class="course-index">0${course.id} / 05</span><span class="course-icon">${course.short}</span></div>
       <h3>${course.title}</h3><p>${course.description}</p>
       <div class="course-footer"><span>6 modules · $25 / ₹2,099</span><span>↗</span></div></article>`).join('');
+    courses.forEach(course => document.querySelector(`[data-course-id="${course.id}"]`).prepend(createCourseIllustration(course)));
     document.querySelectorAll('[data-course-id]').forEach(card => { card.addEventListener('click', () => showCourse(Number(card.dataset.courseId))); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') showCourse(Number(card.dataset.courseId)); }); });
   }
 
