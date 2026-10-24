@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070b24">
+  <title>Application Admin · Intelligence Systems</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin.css">
+  <script defer src="/admin.js"></script>
+</head>
+<body class="admin-body">
+  <header class="admin-header"><a class="brand" href="/" aria-label="Intelligence Systems home"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><span>INTELLIGENCE <b>SYSTEMS</b></span></a><span class="admin-label">APPLICATION ADMIN</span><button id="logoutButton" class="button button-small button-outline" type="button" hidden>Sign out</button></header>
+  <main class="admin-main">
+    <section id="loginPanel" class="admin-login panel" aria-labelledby="loginTitle">
+      <p class="eyebrow">Restricted access</p><h1 id="loginTitle">Admin <em>sign in.</em></h1><p class="muted">Only authorized team members can access applicant information.</p>
+      <form id="loginForm"><label for="adminEmail">Admin email</label><input id="adminEmail" name="email" type="email" autocomplete="username" required maxlength="254"><label for="adminPassword">Password</label><input id="adminPassword" name="password" type="password" autocomplete="current-password" required><button class="button button-primary button-full" type="submit">Sign in <span>→</span></button></form>
+      <p id="loginError" class="admin-error" role="alert" hidden></p>
+    </section>
+    <section id="dashboardPanel" hidden aria-labelledby="dashboardTitle">
+      <div class="admin-title-row"><div><p class="eyebrow">Applicant pipeline</p><h1 id="dashboardTitle">Internship <em>applications.</em></h1><p id="signedInAs" class="muted"></p></div><button id="refreshButton" class="button button-outline" type="button">Refresh</button></div>
+      <div class="admin-toolbar panel">
+        <label>Search<input id="searchInput" type="search" placeholder="Name, email, or role"></label>
+        <label>Status<select id="statusFilter"><option value="">All statuses</option><option value="new">New</option><option value="reviewing">Reviewing</option><option value="shortlisted">Shortlisted</option><option value="rejected">Rejected</option><option value="hired">Hired</option></select></label>
+        <label class="check-label"><input id="archivedFilter" type="checkbox"> Archived only</label>
+      </div>
+      <p id="dashboardMessage" class="admin-message" role="status"></p>
+      <div id="applicationList" class="application-list" aria-live="polite"></div><button id="loadMoreButton" class="button button-outline admin-load-more" type="button" hidden>Load more applications</button>
+    </section>
+  </main>
+  <footer class="admin-footer">Applicant information is confidential. Access and retain it only for recruitment purposes.</footer>
+</body>
+</html>

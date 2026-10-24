@@ -5,6 +5,7 @@
   const storeKeys = { user: 'isa_demo_user_v1', enrolled: 'isa_demo_enrolled_v1', progress: 'isa_demo_progress_v1' };
   const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
   const state = { user: read(storeKeys.user, null), enrolled: read(storeKeys.enrolled, []), progress: read(storeKeys.progress, {}), activeFilter: 'All', selectedCourse: null, selectedModule: null };
+  const coursesOpenAccess = true;
 
   const courseSeeds = [
     { id: 1, title: 'Machine Learning', short: 'ML', description: 'From clean data to deployable prediction systems.', accent: '#8e7dff', modules: ['Python & ML foundations', 'Data preprocessing & EDA', 'Supervised learning', 'Unsupervised learning', 'Practical lab: real-estate prediction', 'Capstone: ML pipeline'] },
@@ -35,7 +36,7 @@
   const toast = message => { const el = $('toast'); el.textContent = message; el.classList.add('show'); window.clearTimeout(toast.timer); toast.timer = window.setTimeout(() => el.classList.remove('show'), 3200); };
   const courseById = id => courses.find(course => course.id === Number(id));
   const completed = id => Array.isArray(state.progress[id]) ? state.progress[id] : [];
-  const isUnlocked = (id, index) => index === 0 || completed(id).includes(index - 1);
+  const isUnlocked = (id, index) => coursesOpenAccess || index === 0 || completed(id).includes(index - 1);
   const openDialog = id => $(id).showModal();
   const closeDialog = id => $(id).close();
   function createCourseIllustration(course) {
@@ -66,35 +67,18 @@
     $('courseGrid').innerHTML = courses.map(course => `<article class="course-card" data-course-id="${course.id}" style="--accent:${course.accent}" tabindex="0" role="button" aria-label="View ${course.title} course">
       <div class="course-top"><span class="course-index">0${course.id} / 05</span><span class="course-icon">${course.short}</span></div>
       <h3>${course.title}</h3><p>${course.description}</p>
-      <div class="course-footer"><span>6 modules · $25 / ₹2,099</span><span>↗</span></div></article>`).join('');
+      <div class="course-footer"><span>Free access · 6 modules</span><span>↗</span></div></article>`).join('');
     courses.forEach(course => document.querySelector(`[data-course-id="${course.id}"]`).prepend(createCourseIllustration(course)));
     document.querySelectorAll('[data-course-id]').forEach(card => { card.addEventListener('click', () => showCourse(Number(card.dataset.courseId))); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') showCourse(Number(card.dataset.courseId)); }); });
   }
 
-  function getCheckoutUrl(id) {
-    const value = config.payments?.links?.[id];
-    if (typeof value !== 'string' || !value.trim()) return '';
-    try {
-      const url = new URL(value.trim());
-      return url.protocol === 'https:' ? url.href : '';
-    } catch {
-      return '';
-    }
-  }
-
   function showCourse(id) {
-    const course = courseById(id); state.selectedCourse = id;
-    const checkoutUrl = getCheckoutUrl(id);
-    const hasPayment = Boolean(checkoutUrl);
-    const rows = course.modules.map((module, index) => `<div class="module-row"><span class="module-number" style="--accent:${course.accent}">${index + 1}</span><div><strong>${module.title}</strong><small>${module.description}</small></div></div>`).join('');
-    $('courseDialogContent').innerHTML = `<div class="course-dialog-inner" style="--accent:${course.accent}"><span class="dialog-kicker">Track 0${course.id} · six modules</span><h2>${course.title}</h2><p>${course.description}</p><div class="module-list">${rows}</div><div class="enrol-actions"><span class="price-pill">$25 <small class="muted">/ ₹2,099</small></span>${hasPayment ? `<a class="button button-primary" href="${checkoutUrl}" target="_blank" rel="noopener noreferrer">Continue to checkout <span>↗</span></a><button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>` : `<button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>`}</div>${hasPayment ? '<p class="form-note">Checkout opens the provider page. This demo does not verify payment or grant access from a checkout return. Demo enrolment saves local preview progress only.</p>' : '<div class="notice">Checkout is not available yet. Add provider-generated HTTPS URLs to <code>public/config.js</code>. Demo enrolment saves local preview progress only and does not process or verify payment.</div>'}</div>`;
-    $('demoEnrollButton').addEventListener('click', () => demoEnroll(id));
+    const course = courseById(id); if (!course) return;
+    state.selectedCourse = id;
+    const rows = course.modules.map((module, index) => `<button class="module-row module-row-button" type="button" data-open-module="${index}"><span class="module-number" style="--accent:${course.accent}">${index + 1}</span><span><strong>${module.title}</strong><small>${module.description}</small></span><span class="module-open-label">Open →</span></button>`).join('');
+    $('courseDialogContent').innerHTML = `<div class="course-dialog-inner" style="--accent:${course.accent}"><span class="dialog-kicker">Track 0${course.id} · free open access</span><h2>${course.title}</h2><p>${course.description}</p><div class="module-list">${rows}</div><p class="form-note">All modules are open—no payment, sign-in, or enrolment required. Learning progress, when marked, is saved only in this browser.</p></div>`;
+    $('courseDialogContent').querySelectorAll('[data-open-module]').forEach(button => button.addEventListener('click', () => showModule(id, Number(button.dataset.openModule))));
     openDialog('courseDialog');
-  }
-
-  function demoEnroll(id) {
-    if (!state.enrolled.includes(id)) { state.enrolled.push(id); state.progress[id] = []; save(); toast('Demo enrolment added to your dashboard.'); }
-    closeDialog('courseDialog'); navigate('dashboard');
   }
 
   function renderDashboard() {
@@ -115,15 +99,15 @@
 
   function showModule(courseId, index) {
     const course = courseById(courseId); const module = course?.modules[index]; if (!course || !module) return;
-    if (!isUnlocked(courseId, index)) { toast('Finish the previous module to unlock this one.'); return; }
+    if (!coursesOpenAccess && !isUnlocked(courseId, index)) { toast('Finish the previous module to unlock this one.'); return; }
     state.selectedCourse = courseId; state.selectedModule = index;
     const done = completed(courseId).includes(index);
-    $('moduleDialogContent').innerHTML = `<div class="module-inner"><span class="dialog-kicker" style="color:${course.accent}">${course.title} · module ${index + 1} of 6</span><h2>${module.title}</h2><p class="muted">${module.description}</p><div class="module-meta"><span class="tag">Video lesson</span><span class="tag">PDF guide</span><span class="tag">Hands-on lab</span></div><iframe class="video-frame" src="${module.video}" title="${module.title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="resource-row"><a href="${module.pdf}" target="_blank" rel="noopener">↗ Open PDF guide</a><a href="${module.lab}" target="_blank" rel="noopener">↗ Open Colab lab</a></div><button class="button button-primary module-complete" id="completeModule" type="button">${done ? 'Completed · mark again' : 'Mark complete & unlock next'} <span>→</span></button></div>`;
+    $('moduleDialogContent').innerHTML = `<div class="module-inner"><span class="dialog-kicker" style="color:${course.accent}">${course.title} · module ${index + 1} of 6</span><h2>${module.title}</h2><p class="muted">${module.description}</p><div class="module-meta"><span class="tag">Video lesson</span><span class="tag">PDF guide</span><span class="tag">Hands-on lab</span></div><iframe class="video-frame" src="${module.video}" title="${module.title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><div class="resource-row"><a href="${module.pdf}" target="_blank" rel="noopener">↗ Open PDF guide</a><a href="${module.lab}" target="_blank" rel="noopener">↗ Open Colab lab</a></div><button class="button button-primary module-complete" id="completeModule" type="button">${done ? 'Completed · mark again' : 'Mark complete · open access'} <span>→</span></button></div>`;
     $('completeModule').addEventListener('click', () => completeModule(courseId, index)); openDialog('moduleDialog');
   }
 
   function completeModule(courseId, index) {
-    const items = completed(courseId); if (!items.includes(index)) items.push(index); items.sort((a, b) => a - b); state.progress[courseId] = items; save(); closeDialog('moduleDialog'); renderDashboard(); toast(index === 5 ? 'Track complete — your certificate is ready.' : 'Module complete — the next module is unlocked.');
+    const items = completed(courseId); if (!items.includes(index)) items.push(index); items.sort((a, b) => a - b); state.progress[courseId] = items; save(); closeDialog('moduleDialog'); renderDashboard(); toast(index === 5 ? 'Track complete — progress saved on this browser.' : 'Progress saved on this browser. All modules remain open.');
   }
 
   function renderInternships() {
@@ -155,19 +139,7 @@
     submitButton.disabled = true;
     const originalLabel = submitButton.innerHTML;
     submitButton.textContent = 'Saving application…';
-    const values = new FormData(event.currentTarget);
-    const role = String(values.get('role') || 'Internship').trim();
-    const body = [
-      `Role: ${role}`,
-      `Name: ${String(values.get('name') || '').trim()}`,
-      `Email: ${String(values.get('email') || '').trim()}`,
-      `Phone: ${String(values.get('phone') || '').trim() || 'Not provided'}`,
-      `Portfolio or resume: ${String(values.get('portfolio') || '').trim() || 'Not provided'}`,
-      `LinkedIn profile: ${String(values.get('linkedin') || '').trim() || 'Not provided'}`,
-      '',
-      'Message:',
-      String(values.get('message') || '').trim()
-    ].join('\n');
+    const values = new FormData(form);
     const application = Object.fromEntries(values.entries());
     try {
       const response = await fetch('/api/applications', {
@@ -180,9 +152,9 @@
         const fieldErrors = result.fields ? Object.entries(result.fields).map(([field, message]) => `${field}: ${message}`).join(' ') : result.error;
         throw new Error(fieldErrors || 'The application could not be saved.');
       }
-      const subject = encodeURIComponent(`Internship application: ${role}`);
-      window.location.href = `mailto:internships@intelligencesystems.in?subject=${subject}&body=${encodeURIComponent(body)}`;
-      toast('Application saved on this server. Review and send the email draft to notify the team.');
+      toast('Application submitted. A notification has been queued for the team.');
+      form.reset();
+      closeDialog('applicationDialog');
     } catch (error) {
       toast(error.message || 'Could not save your application. Please try again.');
     } finally {

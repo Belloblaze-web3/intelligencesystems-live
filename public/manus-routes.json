@@ -3,6 +3,7 @@
     { "path": "/", "title": "Intelligence Systems Academy" },
     { "path": "/#courses", "title": "Courses" },
     { "path": "/#dashboard", "title": "Student Dashboard" },
-    { "path": "/#internships", "title": "Internship Board" }
+    { "path": "/#internships", "title": "Internship Board" },
+    { "path": "/admin", "title": "Application Admin Sign-in" }
   ]
 }

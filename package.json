@@ -3,6 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "description": "Deployable static academy site for Intelligence Systems.",
-  "scripts": { "start": "node server.js", "build": "node scripts/build.js", "check": "node --check server.js && node --check public/app.js && node --check scripts/build.js" },
-  "engines": { "node": ">=20" }
+  "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/build.js",
+    "check": "node --check server.js && node --check public/app.js && node --check public/admin.js && node --check scripts/build.js && node --check scripts/hash-admin-password.js && node --check scripts/migrate-applications.js",
+    "migrate:applications": "node scripts/migrate-applications.js",
+    "admin:hash-password": "node scripts/hash-admin-password.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "nodemailer": "^10.2.1",
+    "pg": "^8.23.1"
+  }
 }

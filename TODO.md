@@ -1,19 +1,17 @@
 # Intelligence Systems Academy — delivery outcomes
 
-- [x] Import the existing implementation from `https://github.com/Belloblaze-web3/intelligencesystems-live` into this managed website project without replacing its implementation.
-- [ ] Publish the responsive static academy interface with five learning tracks—Machine Learning, Artificial Intelligence, Data Science, Digital Marketing, and Generative AI—each containing six modules.
-- [x] Preserve sequential module unlocking according to completed prerequisites.
-- [x] Preserve internship listings and provide a clickable role-specific application action plus a form with applicant name, email, optional phone/portfolio, and a message. Submission prepares an email draft to the existing internship contact; the applicant must send it, and the site does not store or submit applications automatically.
-- [x] Preserve browser-local demo login, enrolments, learning progress, and certificate preview/download behavior; do not imply demo login or demo enrolment is production authentication or a successful payment.
-- [x] Include the actual generated hero and five course illustration WebP files in the repository, update references to repository-relative paths, and serve WebP with the correct MIME type.
-- [x] Preview the updated site locally; the homepage, four-route manifest, internship board, and all six image files were verified, and the first role-specific application form opened with its role prefilled.
-- [ ] Publish the latest managed-site checkpoint so the updates appear online.
-- [x] Implement external checkout handoff for provider-generated HTTPS links; opening a link alone does not grant enrolment or claim successful payment.
-- [ ] Configure actual provider-generated checkout URLs for the five course tracks and the bundle; the required link values have not been supplied.
-- [x] Update checkout messaging to state that checkout is unavailable and demo enrolment is local-only while provider URLs are blank.
-- [x] Run the existing syntax and static-build checks successfully.
-
-## Repository's documented launch boundary
-
-- [ ] Before accepting real users, add provider-approved checkout URLs to `public/config.js`, replace demo enrolment with server-side payment webhook entitlements, and connect login and progress storage to a production authentication/database service.
-- [ ] Before representing course content or application destinations as production-ready, replace shared placeholder PDF/lesson links and `mailto:` internship destinations with authored course content, real application portals, and production application submission storage as needed.
+- [x] Maintain five six-module learning tracks and make every course/module temporarily free and open without login, enrolment, or checkout.
+- [x] Keep learner demo identity, progress, and certificate previews clearly browser-local; this is not production account data or an official credential.
+- [x] Keep role-specific internship listings and applicant form with client/server validation for required and optional fields.
+- [x] Replace file-backed application storage with PostgreSQL transactions, an idempotent importer for legacy JSON records, and database-backed expiring admin sessions.
+- [x] Add a restricted admin dashboard for searching/filtering, paginating, reviewing, setting status, adding internal notes, and archiving/unarchiving applications.
+- [x] Add transactional notification-outbox records and retry/backoff SMTP delivery for new applications.
+- [x] Keep applicant data out of `public/`, Git, browser configuration, and repository secrets.
+- [x] Add Docker runtime setup, example environment configuration, hash generation helper, and operations documentation.
+- [x] Run syntax/build checks, dependency audit, admin hash-format check, and route smoke tests without a database configured.
+- [ ] Configure production `DATABASE_URL`, admin email/password hash, SMTP credentials/sender, and team notification recipient in deployment secrets.
+- [ ] Deploy the dynamic Node service with managed PostgreSQL backups/TLS/access controls and operational monitoring; static-only hosting cannot provide the application/admin APIs.
+- [ ] If prior applications exist in a private JSON file, securely import them with `npm run migrate:applications` before switching service traffic.
+- [ ] Review applicant-data retention, notification mailbox access, and deletion process before accepting production applications.
+- [ ] Replace shared demo lesson/video/PDF/resource links with authored curriculum before describing the courses as finished production content.
+- [ ] Revisit whether and when to restore course pricing/enrolment restrictions; open access is temporary.

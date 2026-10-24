@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const required = ['index.html', 'styles.css', 'config.js', 'app.js', 'manus-routes.json', 'favicon.svg', 'resources/module-guide.pdf'];
+const required = ['index.html', 'styles.css', 'config.js', 'app.js', 'admin.html', 'admin.css', 'admin.js', 'manus-routes.json', 'favicon.svg', 'resources/module-guide.pdf'];
 const root = path.join(__dirname, '..', 'public');
 const missing = required.filter(file => !fs.existsSync(path.join(root, file)));
 if (missing.length) { console.error(`Build failed; missing public files: ${missing.join(', ')}`); process.exit(1); }

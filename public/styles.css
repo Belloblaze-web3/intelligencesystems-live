@@ -31,3 +31,6 @@
 .application-panel textarea{min-height:116px;resize:vertical;line-height:1.5}
 .application-panel form .button{margin-top:20px}
 @media(max-width:560px){.application-panel{padding:27px 21px}.application-panel h2{font-size:31px}}
+
+/* Public open-access course module buttons */
+.module-row-button{width:100%;text-align:left;color:inherit;background:rgba(255,255,255,.015);border:1px solid transparent;cursor:pointer}.module-row-button:hover,.module-row-button:focus-visible{border-color:var(--cyan);background:rgba(98,231,255,.06);outline:none}.module-row-button>span:nth-child(2){flex:1}.module-open-label{color:var(--cyan);font-size:11px;font-weight:700;white-space:nowrap}
