@@ -13,7 +13,21 @@
 
 /* Home hero: global student community background */
 .hero-view{isolation:isolate}
-.hero-view::before{content:'';position:absolute;inset:18px 18px 28px;border:1px solid rgba(185,196,255,.12);border-radius:24px;pointer-events:none;z-index:0;background-image:linear-gradient(90deg,rgba(7,10,34,.97) 0%,rgba(7,10,34,.9) 34%,rgba(7,10,34,.63) 63%,rgba(7,10,34,.34) 100%),linear-gradient(0deg,rgba(7,10,34,.35),transparent 42%,rgba(7,10,34,.18)),url('/manus-storage/async-images/1wKEp8wxRrn1lNAhF19r66/image-1.webp');background-position:center,center,center right;background-size:cover;background-repeat:no-repeat}
+.hero-view::before{content:'';position:absolute;inset:18px 18px 28px;border:1px solid rgba(185,196,255,.12);border-radius:24px;pointer-events:none;z-index:0;background-image:linear-gradient(90deg,rgba(7,10,34,.97) 0%,rgba(7,10,34,.9) 34%,rgba(7,10,34,.63) 63%,rgba(7,10,34,.34) 100%),linear-gradient(0deg,rgba(7,10,34,.35),transparent 42%,rgba(7,10,34,.18)),url('/images/hero-students-globe.webp');background-position:center,center,center right;background-size:cover;background-repeat:no-repeat}
 .hero-copy,.hero-visual{z-index:1}
-@media(max-width:860px){.hero-view::before{inset:12px;border-radius:20px;background-image:linear-gradient(180deg,rgba(7,10,34,.75) 0%,rgba(7,10,34,.9) 48%,rgba(7,10,34,.72) 100%),url('/manus-storage/async-images/1wKEp8wxRrn1lNAhF19r66/image-1.webp');background-position:center,66% center}}
-@media(max-width:560px){.hero-view::before{inset:8px;background-image:linear-gradient(180deg,rgba(7,10,34,.82) 0%,rgba(7,10,34,.93) 54%,rgba(7,10,34,.78) 100%),url('/manus-storage/async-images/1wKEp8wxRrn1lNAhF19r66/image-1.webp');background-position:center,63% center}}
+@media(max-width:860px){.hero-view::before{inset:12px;border-radius:20px;background-image:linear-gradient(180deg,rgba(7,10,34,.75) 0%,rgba(7,10,34,.9) 48%,rgba(7,10,34,.72) 100%),url('/images/hero-students-globe.webp');background-position:center,66% center}}
+@media(max-width:560px){.hero-view::before{inset:8px;background-image:linear-gradient(180deg,rgba(7,10,34,.82) 0%,rgba(7,10,34,.93) 54%,rgba(7,10,34,.78) 100%),url('/images/hero-students-globe.webp');background-position:center,63% center}}
+
+
+/* Internship application form */
+.dialog-application{width:min(620px,calc(100% - 28px))}
+.application-panel{padding:34px;max-height:86vh;overflow-y:auto}
+.application-panel h2{font:600 36px var(--display);letter-spacing:-.06em;margin:8px 0}
+.application-panel form{display:grid;margin-top:18px}
+.application-panel label{font-size:11px;color:var(--muted);font-weight:700;margin:12px 0 6px}
+.application-panel input,.application-panel textarea{width:100%;font:inherit;background:#090d2a;border:1px solid var(--line);border-radius:9px;padding:12px;color:var(--text);outline:none}
+.application-panel input:focus,.application-panel textarea:focus{border-color:var(--cyan)}
+.application-panel input[readonly]{color:var(--cyan);background:rgba(98,231,255,.05)}
+.application-panel textarea{min-height:116px;resize:vertical;line-height:1.5}
+.application-panel form .button{margin-top:20px}
+@media(max-width:560px){.application-panel{padding:27px 21px}.application-panel h2{font-size:31px}}

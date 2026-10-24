@@ -14,11 +14,11 @@
     { id: 5, title: 'Generative AI', short: 'GEN', description: 'LLMs, prompting, retrieval and product deployment.', accent: '#ff83cf', modules: ['LLM foundations', 'Prompt engineering', 'LangChain & RAG', 'Image generation', 'Practical lab: AI assistant', 'Capstone: GenAI SaaS'] }
   ];
   const courseIllustrations = {
-    1: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-1.webp', alt: 'A learning machine adapting to incoming data patterns' },
-    2: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-2.webp', alt: 'An AI robotic system automating connected tasks' },
-    3: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-3.webp', alt: 'Data structures revealing patterns and insights' },
-    4: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-4.webp', alt: 'A digital campaign reaching a connected audience' },
-    5: { src: '/manus-storage/async-images/DuVorP8nR9yFvrK1ShCWYK/image-5.webp', alt: 'Generative AI transforming a network into a new creation' }
+    1: { src: '/course-illustrations/machine-learning.webp', alt: 'A learning machine adapting to incoming data patterns' },
+    2: { src: '/course-illustrations/artificial-intelligence.webp', alt: 'An AI robotic system automating connected tasks' },
+    3: { src: '/course-illustrations/data-science.webp', alt: 'Data structures revealing patterns and insights' },
+    4: { src: '/course-illustrations/digital-marketing.webp', alt: 'A digital campaign reaching a connected audience' },
+    5: { src: '/course-illustrations/generative-ai.webp', alt: 'Generative AI transforming a network into a new creation' }
   };
   const videoIds = ['7eh4d6sabA0', 'ukzFI9rgwfU', '7eh4d6sabA0', 'ukzFI9rgwfU', '7eh4d6sabA0', '7eh4d6sabA0'];
   const courses = courseSeeds.map(course => ({ ...course, modules: course.modules.map((title, index) => ({ title, description: ['Concepts, setup and your first working system.', 'Turn messy inputs into useful signals.', 'Build and evaluate a supervised solution.', 'Find structure without labels.', 'A focused, real-world implementation sprint.', 'Ship an end-to-end portfolio project.'][index], video: `https://www.youtube.com/embed/${videoIds[index]}?rel=0`, pdf: `/resources/module-guide.pdf#page=${index + 1}`, lab: `https://colab.research.google.com/?course=${encodeURIComponent(course.title)}&module=${index + 1}` })) }));
@@ -71,11 +71,23 @@
     document.querySelectorAll('[data-course-id]').forEach(card => { card.addEventListener('click', () => showCourse(Number(card.dataset.courseId))); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') showCourse(Number(card.dataset.courseId)); }); });
   }
 
+  function getCheckoutUrl(id) {
+    const value = config.payments?.links?.[id];
+    if (typeof value !== 'string' || !value.trim()) return '';
+    try {
+      const url = new URL(value.trim());
+      return url.protocol === 'https:' ? url.href : '';
+    } catch {
+      return '';
+    }
+  }
+
   function showCourse(id) {
     const course = courseById(id); state.selectedCourse = id;
-    const hasPayment = Boolean(config.payments?.links?.[id]);
+    const checkoutUrl = getCheckoutUrl(id);
+    const hasPayment = Boolean(checkoutUrl);
     const rows = course.modules.map((module, index) => `<div class="module-row"><span class="module-number" style="--accent:${course.accent}">${index + 1}</span><div><strong>${module.title}</strong><small>${module.description}</small></div></div>`).join('');
-    $('courseDialogContent').innerHTML = `<div class="course-dialog-inner" style="--accent:${course.accent}"><span class="dialog-kicker">Track 0${course.id} · six modules</span><h2>${course.title}</h2><p>${course.description}</p><div class="module-list">${rows}</div><div class="enrol-actions"><span class="price-pill">$25 <small class="muted">/ ₹2,099</small></span>${hasPayment ? `<a class="button button-primary" href="${config.payments.links[id]}" target="_blank" rel="noopener">Open secure checkout <span>↗</span></a><button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>` : `<button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>`}</div>${hasPayment ? '<p class="form-note">Payment handoff is configured as an external link. Enrolment is still granted only by your payment provider/webhook in production; the demo button is for testing the course flow.</p>' : '<div class="notice">Live payment is not configured yet. Add a checkout URL in <code>public/config.js</code> before accepting real payments. Demo enrolment is available for preview only.</div>'}</div>`;
+    $('courseDialogContent').innerHTML = `<div class="course-dialog-inner" style="--accent:${course.accent}"><span class="dialog-kicker">Track 0${course.id} · six modules</span><h2>${course.title}</h2><p>${course.description}</p><div class="module-list">${rows}</div><div class="enrol-actions"><span class="price-pill">$25 <small class="muted">/ ₹2,099</small></span>${hasPayment ? `<a class="button button-primary" href="${checkoutUrl}" target="_blank" rel="noopener noreferrer">Continue to checkout <span>↗</span></a><button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>` : `<button class="button button-outline" id="demoEnrollButton" type="button">Demo enrolment</button>`}</div>${hasPayment ? '<p class="form-note">Checkout opens the provider page. This demo does not verify payment or grant access from a checkout return. Demo enrolment saves local preview progress only.</p>' : '<div class="notice">Checkout is not available yet. Add provider-generated HTTPS URLs to <code>public/config.js</code>. Demo enrolment saves local preview progress only and does not process or verify payment.</div>'}</div>`;
     $('demoEnrollButton').addEventListener('click', () => demoEnroll(id));
     openDialog('courseDialog');
   }
@@ -116,8 +128,16 @@
 
   function renderInternships() {
     const types = ['All', ...new Set(internships.map(item => item.type))]; $('internshipFilters').innerHTML = types.map(type => `<button class="filter-button ${state.activeFilter === type ? 'active' : ''}" type="button" data-filter="${type}">${type}</button>`).join('');
-    $('internshipGrid').innerHTML = internships.filter(item => state.activeFilter === 'All' || item.type === state.activeFilter).map(item => `<article class="intern-card"><div><p class="eyebrow" style="color:var(--lime)">${item.course}</p><h3>${item.title}</h3><p>${item.company} · ${item.duration} · ${item.stipend}</p><div class="intern-tags"><span>${item.type}</span><span>Portfolio preferred</span></div></div><a href="${item.applyUrl}" aria-label="Apply for ${item.title}">Apply →</a></article>`).join('');
+    $('internshipGrid').innerHTML = internships.filter(item => state.activeFilter === 'All' || item.type === state.activeFilter).map(item => `<article class="intern-card"><div><p class="eyebrow" style="color:var(--lime)">${item.course}</p><h3>${item.title}</h3><p>${item.company} · ${item.duration} · ${item.stipend}</p><div class="intern-tags"><span>${item.type}</span><span>Portfolio preferred</span></div></div><a href="${item.applyUrl}" data-apply-title="${escapeHtml(item.title)}" aria-label="Apply for ${escapeHtml(item.title)}">Apply →</a></article>`).join('');
     document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => { state.activeFilter = button.dataset.filter; renderInternships(); }));
+    document.querySelectorAll('[data-apply-title]').forEach(link => link.addEventListener('click', event => { event.preventDefault(); openApplication(link.dataset.applyTitle); }));
+  }
+
+  function openApplication(title) {
+    const listing = internships.find(item => item.title === title);
+    if (!listing) return;
+    $('applicationRole').value = listing.title;
+    openDialog('applicationDialog');
   }
 
   function openAuth() { $('authName').value = state.user?.name || ''; $('authEmail').value = state.user?.email || ''; openDialog('authDialog'); }
@@ -127,6 +147,24 @@
 
   $('authButton').addEventListener('click', openAuth);
   $('authForm').addEventListener('submit', event => { event.preventDefault(); state.user = { name: $('authName').value.trim(), email: $('authEmail').value.trim() }; save(); updateAuthButton(); closeDialog('authDialog'); navigate('dashboard'); toast('Demo session started.'); });
+  $('applicationForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const values = new FormData(event.currentTarget);
+    const role = String(values.get('role') || 'Internship').trim();
+    const body = [
+      `Role: ${role}`,
+      `Name: ${String(values.get('name') || '').trim()}`,
+      `Email: ${String(values.get('email') || '').trim()}`,
+      `Phone: ${String(values.get('phone') || '').trim() || 'Not provided'}`,
+      `Portfolio or resume: ${String(values.get('portfolio') || '').trim() || 'Not provided'}`,
+      '',
+      'Message:',
+      String(values.get('message') || '').trim()
+    ].join('\n');
+    const subject = encodeURIComponent(`Internship application: ${role}`);
+    window.location.href = `mailto:internships@intelligencesystems.in?subject=${subject}&body=${encodeURIComponent(body)}`;
+    toast('If an email app is configured, a draft should open. Review and send it to submit your application.');
+  });
   document.querySelectorAll('[data-view]').forEach(link => link.addEventListener('click', event => { const view = link.dataset.view; if (view) { event.preventDefault(); navigate(view); } }));
   document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
   document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); }));

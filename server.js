@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const port = Number(process.env.PORT || 3000);
 const root = path.join(__dirname, 'public');
-const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.pdf': 'application/pdf' };
+const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.pdf': 'application/pdf' };
 function safePath(urlPath) { const decoded = decodeURIComponent(urlPath.split('?')[0]); const relative = decoded === '/' ? 'index.html' : decoded.replace(/^\/+/, ''); const resolved = path.resolve(root, relative); return resolved.startsWith(root + path.sep) ? resolved : null; }
 const server = http.createServer((req, res) => {
   if (req.url === '/health') { res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' }); return res.end('ok'); }
