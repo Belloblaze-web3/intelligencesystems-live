@@ -1,0 +1,8 @@
+{
+  "name": "intelligence-systems-academy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deployable static academy site for Intelligence Systems.",
+  "scripts": { "start": "node server.js", "build": "node scripts/build.js", "check": "node --check server.js && node --check public/app.js && node --check scripts/build.js" },
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,8 @@
+{
+  "routes": [
+    { "path": "/", "title": "Intelligence Systems Academy" },
+    { "path": "/#courses", "title": "Courses" },
+    { "path": "/#dashboard", "title": "Student Dashboard" },
+    { "path": "/#internships", "title": "Internship Board" }
+  ]
+}

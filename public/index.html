@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Intelligence Systems Academy — sequential learning for machine learning, AI, data science, marketing and generative AI.">
+  <meta name="theme-color" content="#070b24">
+  <title>Intelligence Systems Academy</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="brand" href="#home" data-view="home" aria-label="Intelligence Systems Academy home">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>INTELLIGENCE <b>SYSTEMS</b></span>
+    </a>
+    <button class="mobile-menu" id="mobileMenu" type="button" aria-expanded="false" aria-controls="primaryNav"><span></span><span></span><span></span><span class="sr-only">Toggle navigation</span></button>
+    <nav id="primaryNav" class="primary-nav" aria-label="Primary navigation">
+      <a href="#courses" data-view="courses">Courses</a>
+      <a href="#internships" data-view="internships">Internships</a>
+      <a href="#dashboard" data-view="dashboard">Dashboard</a>
+      <button class="button button-small button-outline" id="authButton" type="button">Log in</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="homeView" class="view hero-view" data-route="home">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot"></span> Sequential learning / 2026 cohort</p>
+        <h1>Build <em>useful intelligence.</em><br>One module at a time.</h1>
+        <p class="hero-lede">A focused learning path across machine learning, artificial intelligence, data, growth and generative AI. Finish the work, unlock the next move.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#courses" data-view="courses">Explore the curriculum <span>↗</span></a>
+          <a class="text-link" href="#internships" data-view="internships">View internship board <span>→</span></a>
+        </div>
+        <div class="hero-proof"><div><strong>05</strong><span>career tracks</span></div><div><strong>30</strong><span>hands-on modules</span></div><div><strong>$25</strong><span>per certificate track</span></div></div>
+      </div>
+      <div class="hero-visual" aria-label="Abstract intelligence systems illustration" role="img">
+        <div class="visual-glow"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="core-node"><span class="core-icon">✦</span><span>LEARN<br>→ BUILD</span></div>
+        <div class="signal signal-a"><span class="signal-dot"></span><b>ML</b><small>patterns</small></div>
+        <div class="signal signal-b"><span class="signal-dot"></span><b>GENAI</b><small>systems</small></div>
+        <div class="signal signal-c"><span class="signal-dot"></span><b>DATA</b><small>decisions</small></div>
+      </div>
+    </section>
+
+    <section id="coursesView" class="view section-view" data-route="courses" hidden>
+      <div class="section-heading"><div><p class="eyebrow">The curriculum</p><h2>Choose your <em>next system.</em></h2></div><p>Every track is split into six practical modules. Complete one to unlock the next.</p></div>
+      <div id="courseGrid" class="course-grid"></div>
+    </section>
+
+    <section id="dashboardView" class="view section-view" data-route="dashboard" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Your command centre</p><h2>Keep <em>moving forward.</em></h2></div><p id="dashboardNote">Demo progress is stored only in this browser until a production account backend is connected.</p></div>
+      <div id="dashboardEmpty" class="empty-state"><div class="empty-icon">◎</div><h3>Your dashboard is waiting.</h3><p>Log in, then enrol in a course to start your sequential learning path.</p><a class="button button-primary" href="#courses" data-view="courses">Browse courses <span>↗</span></a></div>
+      <div id="dashboardContent" class="dashboard-content" hidden></div>
+    </section>
+
+    <section id="internshipsView" class="view section-view" data-route="internships" hidden>
+      <div class="section-heading"><div><p class="eyebrow">Step two: apply the work</p><h2>Internships for <em>builders.</em></h2></div><p>Opportunities are matched to the skills inside each track. Apply externally using the link on every listing.</p></div>
+      <div class="filter-row" id="internshipFilters" role="group" aria-label="Filter internships"></div>
+      <div id="internshipGrid" class="internship-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="footer-brand"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span><strong>INTELLIGENCE SYSTEMS</strong></div><p>Practical systems thinking for the next generation of builders.</p><div class="footer-meta"><span>© 2026 Intelligence Systems</span><span>Demo academy interface</span></div></footer>
+
+  <dialog id="courseDialog" class="dialog dialog-course"><button class="dialog-close" data-close-dialog="courseDialog" aria-label="Close course details">×</button><div id="courseDialogContent"></div></dialog>
+  <dialog id="moduleDialog" class="dialog dialog-module"><button class="dialog-close" data-close-dialog="moduleDialog" aria-label="Close module">×</button><div id="moduleDialogContent"></div></dialog>
+  <dialog id="authDialog" class="dialog dialog-auth"><button class="dialog-close" data-close-dialog="authDialog" aria-label="Close login">×</button><div class="auth-panel"><p class="eyebrow">Local demo access</p><h2>Open your <em>dashboard.</em></h2><p class="muted">This is a browser-only demo login. No password or sensitive data is collected.</p><form id="authForm"><label for="authName">Full name</label><input id="authName" name="name" autocomplete="name" placeholder="Ada Lovelace" required><label for="authEmail">Email address</label><input id="authEmail" name="email" type="email" autocomplete="email" placeholder="ada@example.com" required><button class="button button-primary button-full" type="submit">Continue to dashboard <span>→</span></button></form><p class="form-note">Production note: connect this form to your authentication provider before collecting real user data.</p></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
